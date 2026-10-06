@@ -1,9 +1,10 @@
 // Shows the bundled statusline.sh output through $.ui.status on the desktop app.
 const ANSI = /\x1b\[[0-9;]*m/g
 const OSC8 = /\x1b\]8;;[^\x07]*\x07/g
-// Segments the desktop app already shows (git branch, context bar, Sess/Wk usage), plus
-// the +N -N count, which we cannot supply.
-const DROP = /^(🌿 |[█░]+ \d+%|(Sess|Wk) |\+\d+ -\d+$)/
+// Segments the desktop app already shows (git branch, context bar, Sess/Wk usage), the
+// +N -N count, which we cannot supply, and the site link, which plain status text cannot
+// make clickable.
+const DROP = /^(🌿 |[█░]+ \d+%|(Sess|Wk) |\+\d+ -\d+$|🔗 )/
 const MODEL = /^\[[^\]]*\]\s*/
 
 let startedAt

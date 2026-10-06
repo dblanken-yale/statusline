@@ -16,7 +16,7 @@ A Claude Code status line that works in the terminal and the desktop app.
 
 The context bar turns yellow at 60% and red at 80%, with a hint to compact or hand off.
 
-In the desktop app the mod shows this as a single plain line under the prompt, leaving out what the app already shows (branch, context, usage limits, lines changed).
+In the desktop app the mod shows this as a single plain line under the prompt, leaving out what the app already shows (branch, context, usage limits, lines changed) and the local site link.
 
 Needs `bash` and `jq`.
 

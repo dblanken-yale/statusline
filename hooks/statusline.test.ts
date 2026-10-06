@@ -34,7 +34,7 @@ test('five_hour limit gets epoch-seconds resets_at and clean status', async ($, 
   expect(input.rate_limits.five_hour.resets_at).toBe(Date.parse('2026-10-01T12:00:00Z') / 1000)
   expect(input.context_window.remaining_percentage).toBe(75)
   expect(seen.argv![1]).toMatch(/\/statusline\.sh$/)
-  expect(seen.status).toBe('📁 proj  |  ⚙ .claude  |  🔗 http://x  |  ⏱  1m 5s')
+  expect(seen.status).toBe('📁 proj  |  ⚙ .claude  |  ⏱  1m 5s')
 })
 
 test('empty rateLimits omits rate_limits', async ($, on) => {
