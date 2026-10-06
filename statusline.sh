@@ -110,7 +110,8 @@ _cfg="${CLAUDE_STATUSLINE_CONFIG:-$HOME/.claude/statusline.conf}"
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // empty')
 model=$(echo "$input" | jq -r '.model.display_name // empty')
 cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
-duration_ms=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
+# Active time: desktop mod's sum of turns, else model time (terminal), else wall clock.
+duration_ms=$(echo "$input" | jq -r '.cost.active_duration_ms // .cost.total_api_duration_ms // .cost.total_duration_ms // 0 | floor')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // 0 | round')
 remaining_pct=$(echo "$input" | jq -r '.context_window.remaining_percentage // 100 | round')
 session_id=$(echo "$input" | jq -r '.session_id // empty')
@@ -186,14 +187,14 @@ fi
 # Format session cost
 cost_fmt=$(printf '$%.2f' "$cost")
 
-# Format duration (ms to Xm Ys)
+# Format duration (ms to Ns, Nm Ns, or Nh Nm)
 total_secs=$((duration_ms / 1000))
-mins=$((total_secs / 60))
-secs=$((total_secs % 60))
-if [ "$mins" -gt 0 ]; then
-  duration_fmt="${mins}m ${secs}s"
+if [ "$total_secs" -ge 3600 ]; then
+  duration_fmt="$((total_secs / 3600))h $((total_secs % 3600 / 60))m"
+elif [ "$total_secs" -ge 60 ]; then
+  duration_fmt="$((total_secs / 60))m $((total_secs % 60))s"
 else
-  duration_fmt="${secs}s"
+  duration_fmt="${total_secs}s"
 fi
 
 # Progress bar grows as context fills (raw used percentage)

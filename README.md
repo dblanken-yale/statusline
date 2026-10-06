@@ -10,8 +10,9 @@ A Claude Code status line that works in the terminal and the desktop app.
 ## What it shows
 
 - **Line 1:** model, project folder, git branch with status dots (green staged, red unstaged, blue untracked), and which Claude config folder the session uses. In a Lando project it adds a clickable link to the local site.
-- **Line 2:** context bar, then usage, lines changed, and session duration.
+- **Line 2:** context bar, then usage, lines changed, and active time (⏱).
   - On a Claude subscription, usage is your 5-hour session and weekly limits, colored green, yellow, or red, with reset times.
+  - The ⏱ shows active time, not how long the window has been open. On desktop it is the sum of your turns. In the terminal it is the time Claude spent responding (model time), because that is what Claude Code gives a status line script.
   - With an API key or gateway, usage is dollar cost for the session, today, and this week, tracked locally in `~/.claude/cost-tracking`.
 
 The context bar turns yellow at 60% and red at 80%, with a hint to compact or hand off.

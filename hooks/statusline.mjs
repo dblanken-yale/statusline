@@ -1,3 +1,5 @@
+import { atom, read, update } from 'claude-code'
+
 // Shows the bundled statusline.sh output through $.ui.status on the desktop app.
 const ANSI = /\x1b\[[0-9;]*m/g
 const OSC8 = /\x1b\]8;;[^\x07]*\x07/g
@@ -7,7 +9,7 @@ const OSC8 = /\x1b\]8;;[^\x07]*\x07/g
 const DROP = /^(🌿 |[█░]+ \d+%|(Sess|Wk) |\+\d+ -\d+$|🔗 )/
 const MODEL = /^\[[^\]]*\]\s*/
 
-let startedAt
+const activeMs = atom({ plugin: 'statusline', key: 'activeMs' }, 0)
 
 async function refresh($, usage) {
   try {
@@ -21,7 +23,7 @@ async function refresh($, usage) {
       session_id: await $.session.id(),
       cost: {
         total_cost_usd: cost?.usd ?? 0,
-        total_duration_ms: (await $.clock.now()) - (usage.startedAt ?? startedAt ?? 0),
+        active_duration_ms: await read($, activeMs),
       },
       context_window: {
         ...(percent !== undefined && { used_percentage: percent, remaining_percentage: 100 - percent }),
@@ -56,11 +58,19 @@ async function refresh($, usage) {
 export function register(on) {
   on('session.start', async ($, e, next) => {
     try {
-      const usage = await $.session.usage()
-      startedAt = usage.startedAt
-      await refresh($, usage)
+      await refresh($, await $.session.usage())
     } catch {}
     return next(e)
+  })
+  on('turn.complete', async ($, e, next) => {
+    const r = await next(e)
+    if (!e.agentId) {
+      await update($, activeMs, ms => ms + e.durationMs)
+      try {
+        await refresh($, await $.session.usage())
+      } catch {}
+    }
+    return r
   })
   on('session.measure', async ($, e, next) => {
     await refresh($, e)

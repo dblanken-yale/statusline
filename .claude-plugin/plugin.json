@@ -1,6 +1,7 @@
 {
   "name": "statusline",
-  "version": "0.1.1",
+  "version": "0.2.0",
+  "types": "./types/index.d.ts",
   "description": "Status line for Claude Code: model, project, git, context, usage limits or API cost, duration. Works in the terminal and the desktop app.",
   "author": { "name": "David Blankenship" }
 }

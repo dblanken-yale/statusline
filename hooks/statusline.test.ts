@@ -49,3 +49,13 @@ test('terminal session leaves the status to settings.json', async ($, on) => {
   expect(seen.stdin).toBeUndefined()
   expect(seen.status).toBeUndefined()
 })
+
+test('active_duration_ms sums main-loop turns and ignores subagents', async ($, on) => {
+  const seen = setup($, on)
+  on('session.usage', () => ({ value: { context: { window: 200000, percent: 25 } } }))
+  on('turn.complete', () => ({ text: '' }) as any)
+  for (const t of [{ durationMs: 30000 }, { durationMs: 45000 }, { durationMs: 99000, agentId: 'a' }]) {
+    await $.turn.complete({ turnId: 't', answer: '', ...t } as any)
+  }
+  expect(JSON.parse(seen.stdin!).cost.active_duration_ms).toBe(75000)
+})
