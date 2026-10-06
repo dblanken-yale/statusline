@@ -1,0 +1,12 @@
+{
+  "name": "statusline",
+  "owner": { "name": "David Blankenship" },
+  "metadata": { "description": "Status line for Claude Code, terminal and desktop" },
+  "plugins": [
+    {
+      "name": "statusline",
+      "description": "Status line for Claude Code: model, project, git, context, usage limits or API cost, duration. Works in the terminal and the desktop app.",
+      "source": "./"
+    }
+  ]
+}
